@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>I'm Sorry 💔</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ffe0e9, #ffe7d1);
+            color: #333;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: #ffffffc0;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+            padding: 1em;
+            z-index: 1000;
+        }
+
+        nav button {
+            background: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 0.7em 1.2em;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        nav button:hover {
+            background-color: #ff9a9e;
+            color: white;
+        }
+
+        .page {
+            display: none;
+            padding: 2em;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6em;
+            margin: 1em 0;
+        }
+
+        .funny-gif {
+            max-width: 90%;
+            border-radius: 20px;
+            margin: 1em 0;
+        }
+
+        #gameBox {
+            position: relative;
+            height: 400px;
+            background: #fff0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1em;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            animation: fall linear;
+            cursor: pointer;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -50px;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .scoreboard {
+            font-size: 1.2em;
+            margin-top: 1em;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5em;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .heart:active {
+            transform: scale(1.8);
+        }
+
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            nav button {
+                font-size: 0.9em;
+                padding: 0.5em 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <button onclick="showPage('gamePage')">Catch Hearts ❤️</button>
+        <button onclick="showPage('home')">😭 Sorry</button>
+        <button onclick="showPage('funny')">Smile?</button>
+    </nav>
+
+    <div id="home" class="page">
+        <h1>I’m Really Sorry 😔</h1>
+        <p>I am soo sorry meri mutki bubu.</p>
+        <p>Please forgive me for this time pleaseeeeeee.</p>
+        <p>I made this site for you. From bottom of my heart ❤️</p>
+    </div>
+
+    <div id="funny" class="page">
+        <h1>Let’s Lighten It Up 🥹</h1>
+        <img src="hug.gif" alt="Funny Sorry" class="funny-gif">
+        <p>If I could code away the sadness, I would. But for now, here's a bear hug from a sad potato.</p>
+    </div>
+
+    <div id="gamePage" class="page active">
+        <h1>Catch the ❤️s</h1>
+        <p>Catch as many hearts as you can in 20 seconds! Every one you catch = one less regret.</p>
+        <div id="gameArea" style="margin-top: 1em;">
+            <button onclick="startGame()">Start Game 🎮</button>
+            <div id="gameBox"></div>
+            <div class="scoreboard">Score: <span id="score">0</span></div>
+        </div>
+    </div>
+
+    <footer>
+        Made with ❤️
+    </footer>
+
+    <script>
+        function showPage(id) {
+            clearInterval(interval); // Stop game when switching tabs
+            gameRunning = false;
+
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+
+        let score = 0;
+        let interval;
+        let gameRunning = false;
+
+        function startGame() {
+            const gameBox = document.getElementById('gameBox');
+
+            // Stop any previous game interval
+            clearInterval(interval);
+
+            gameBox.innerHTML = '';
+            score = 0;
+            document.getElementById('score').textContent = score;
+            gameRunning = true;
+
+            const duration = 20000;
+            const endTime = Date.now() + duration;
+
+            interval = setInterval(() => {
+                if (!gameRunning) return; // extra safety
+
+                if (Date.now() > endTime) {
+                    clearInterval(interval);
+                    gameRunning = false;
+
+                    // Delay the alert just slightly to avoid overlap with animations
+                    setTimeout(() => {
+                        alert("⏰ Time's up! You caught " + score + " hearts ❤️");
+                    }, 100);
+
+                    return;
+                }
+
+                createHeart(gameBox);
+            }, 400);
+        }
+
+
+        function createHeart(container) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 90 + '%';
+            heart.style.top = '-30px';
+            heart.style.animationDuration = Math.random() * 2 + 2 + 's';
+
+            // Make it clickable/tappable with pointerdown
+            heart.addEventListener('pointerdown', () => {
+                if (!gameRunning) return;
+                score++;
+                document.getElementById('score').textContent = score;
+
+                // Pop animation
+                heart.style.transition = 'transform 0.2s ease';
+                heart.style.transform = 'scale(1.8)';
+                setTimeout(() => heart.remove(), 150);
+            });
+
+            container.appendChild(heart);
+        }
+    </script>
+
+</body>
+
+</html>
